@@ -1,0 +1,111 @@
+<div class="spreadsheet-wrapper">
+
+  <!-- 1) Menu Bar (like "File Edit View") -->
+  <div class="menu-bar">
+    <div class="menu-item" (click)="toggleFileMenu($event)">
+      File
+      <div class="dropdown-menu" [class.visible]="fileMenuVisible" (mouseleave)="hideFileMenu()">
+        <div class="menu-option" (click)="downloadCSV()">Download as CSV</div>
+        <label class="menu-option">
+          Import CSV
+          <input type="file" accept=".csv" (change)="onFileSelected($event)" hidden />
+        </label>
+      </div>
+    </div>
+    <div class="menu-item">Edit</div>
+    <div class="menu-item">View</div>
+    <div class="menu-item">Insert</div>
+    <div class="menu-item">Format</div>
+    <div class="menu-item">Data</div>
+    <div class="menu-item">Tools</div>
+    <!-- etc. You can make them real dropdown menus if you like. -->
+  </div>
+
+  <!-- 2) Main Toolbar -->
+  <div class="toolbar">
+    <!-- Left chunk: Range, Data Type -->
+    <div class="toolbar-section">
+      <label>Range:</label>
+      <input
+        type="text"
+        [value]="rangeInput"
+        (change)="onRangeInputChange($any($event.target).value)"
+        placeholder="e.g. A1:C5"
+      />
+      <select (change)="onDataTypeChange($any($event.target).value)">
+        <option value="">Data Type</option>
+        <option value="text">Text</option>
+        <option value="number">Number</option>
+        <option value="date">Date</option>
+      </select>
+    </div>
+
+    <!-- Middle chunk: Formula bar -->
+    <div class="toolbar-section formula-bar">
+      <span class="formula-label">fx</span>
+      <input
+        type="text"
+        class="formula-input"
+        [value]="getSelectedCellRawValue()"
+        (change)="onFormulaChange($any($event.target).value)"
+        placeholder="Enter formula or value"
+      />
+    </div>
+
+    <!-- Right chunk: Basic formatting -->
+    <div class="toolbar-section formatting-controls">
+      <button (click)="toggleBold()">B</button>
+      <button (click)="toggleItalic()">I</button>
+      <input
+        type="number"
+        style="width: 60px"
+        (change)="onFontSizeChange($any($event.target).value)"
+        placeholder="Size"
+      />
+      <input
+        type="color"
+        (change)="onColorChange($any($event.target).value)"
+      />
+    </div>
+  </div>
+
+  <!-- 3) The table area -->
+  <div class="table-area"
+       (mouseup)="onMouseUp($event)"
+       (mouseleave)="onMouseUp($event)">
+    <table>
+      <thead>
+        <tr>
+          <!-- Empty corner cell -->
+          <th class="header-cell corner-header"></th>
+          <!-- Column headers A, B, C, ... -->
+          <th *ngFor="let col of cols; let c = index" class="header-cell column-header">
+            {{ getColumnHeader(c) }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows; let r = index">
+          <!-- Row headers 1, 2, 3, ... -->
+          <th class="header-cell row-header">{{ getRowHeader(r) }}</th>
+          
+          <td *ngFor="let col of cols; let c = index"
+              (mousedown)="onMouseDown($event, r, c)"
+              (mousemove)="onMouseMove($event, r, c)"
+              (mouseup)="onMouseUp($event)">
+            <app-cell
+              [row]="r"
+              [col]="c"
+              [cellData]="spreadsheetService.data[r][c]"
+              [isSelected]="isCellSelected(r, c)"
+              [isInRange]="isCellInRange(r, c)"
+              (selectCell)="onSelectCell(r, c)"
+              (blurCell)="onCellBlur($event)"
+            ></app-cell>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

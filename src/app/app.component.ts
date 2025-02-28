@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { SpreadsheetComponent } from './spreadsheet/spreadsheet.component';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'],
+  imports: [SpreadsheetComponent,CommonModule,FormsModule]
 })
-export class AppComponent {
-  title = 'spreadsheet-app';
-}
+export class AppComponent {}

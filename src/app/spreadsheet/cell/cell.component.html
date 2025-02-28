@@ -1,0 +1,27 @@
+<div
+  class="cell"
+  [class.selected]="isSelected"
+  [class.in-range]="isInRange"
+  [class.invalid]="cellData.validationError"
+  (click)="onCellClick()"
+  (dblclick)="onCellDoubleClick()"
+  [ngStyle]="{
+    'font-weight': cellData.bold ? 'bold' : 'normal',
+    'font-style': cellData.italic ? 'italic' : 'normal',
+    'font-size': cellData.fontSize ? cellData.fontSize + 'px' : 'inherit',
+    'color': cellData.color ? cellData.color : 'inherit'
+  }"
+>
+  <input
+    *ngIf="editing"
+    [(ngModel)]="cellData.rawValue"
+    (blur)="onBlur()"
+    (keydown.enter)="editing=false"
+  />
+  <span *ngIf="!editing">
+    {{ cellData.computedValue }}
+  </span>
+  <div class="error" *ngIf="cellData.validationError">
+    {{ cellData.validationError }}
+  </div>
+</div>
