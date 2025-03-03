@@ -1,0 +1,10 @@
+.formula-bar {
+    margin-bottom: 10px;
+  
+    input {
+      width: 400px;
+      padding: 4px;
+      font-size: 14px;
+    }
+  }
+  
